@@ -1,0 +1,70 @@
+<?php
+
+namespace ShufflingPixels\NotificationAction\Http\Controllers;
+
+use ShufflingPixels\NotificationAction\Attributes\Action;
+use ShufflingPixels\NotificationAction\Http\Response;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Support\Facades\DB;
+use ReflectionClass;
+
+class NotificationActionController
+{
+    public function __invoke(
+        DatabaseNotification $notification,
+        string $action)
+    {
+        // 1. Ensure notification type supports actions
+        $actionHandler = $this->resolveHandler($notification->type);
+        if ($actionHandler === null || ! method_exists($actionHandler, $action)) {
+            return abort(404);
+        }
+
+        // 2. Handle action + mark as read in a transaction if handler wants.
+        return DB::transaction(function () use ($actionHandler, $notification, $action) {
+            $response = $actionHandler->$action($notification);
+            if (! ($response instanceof Response)) {
+                return new Response();
+            }
+
+            if ($response->markAsRead) {
+                if (is_null($notification->read_at)) {
+                    $notification->markAsRead();
+                }
+            }
+            return $response;
+        })->httpResponse;
+    }
+
+    protected function resolveHandler(?string $class) : Object|null
+    {
+        if ($class === null) {
+            return null;
+        }
+
+        $reflection = new ReflectionClass($class);
+        $attributes = $reflection->getAttributes(Action::class);
+
+        if (count($attributes) < 1) {
+            return null;
+        }
+        $arguments = $attributes[0]->getArguments();
+        if (count($arguments) < 1) {
+            return null;
+        }
+        return app()->make($arguments[0]);
+    }
+
+    protected function checkSettings(object $handler, $setting) : mixed
+    {
+        if (property_exists($handler, $setting)) {
+            return $handler->$setting;
+        }
+
+        if (method_exists($handler, $setting)) {
+            return $handler->$setting();
+        }
+
+        return null;
+    }
+}
