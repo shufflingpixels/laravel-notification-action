@@ -28,9 +28,7 @@ class NotificationActionController
             }
 
             if ($response->markAsRead) {
-                if (is_null($notification->read_at)) {
-                    $notification->markAsRead();
-                }
+                $notification->markAsRead();
             }
             return $response;
         })->httpResponse;
