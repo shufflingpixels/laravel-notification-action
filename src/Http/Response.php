@@ -8,7 +8,8 @@ class Response
 {
     public function __construct(
         public ?HttpResponse $httpResponse = null,
-        public bool $markAsRead = false)
+        public bool $markAsRead = false,
+        public bool $delete = false)
     {
         $this->httpResponse ??= response()->noContent(200);
     }
@@ -16,5 +17,10 @@ class Response
     static public function markAsRead()
     {
         return new Response(markAsRead: true);
+    }
+
+    static public function delete()
+    {
+        return new Response(delete: true);
     }
 }

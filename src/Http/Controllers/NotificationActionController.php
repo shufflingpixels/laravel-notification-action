@@ -10,9 +10,7 @@ use ReflectionClass;
 
 class NotificationActionController
 {
-    public function __invoke(
-        DatabaseNotification $notification,
-        string $action)
+    public function __invoke(DatabaseNotification $notification, string $action)
     {
         // 1. Ensure notification type supports actions
         $actionHandler = $this->resolveHandler($notification->type);
@@ -20,7 +18,7 @@ class NotificationActionController
             return abort(404);
         }
 
-        // 2. Handle action + mark as read in a transaction if handler wants.
+        // 2. Handle action + mark as read/delete in a transaction if handler wants.
         return DB::transaction(function () use ($actionHandler, $notification, $action) {
             $response = $actionHandler->$action($notification);
             if (! ($response instanceof Response)) {
@@ -29,6 +27,10 @@ class NotificationActionController
 
             if ($response->markAsRead) {
                 $notification->markAsRead();
+            }
+
+            if ($response->delete) {
+                $notification->delete();
             }
             return $response;
         })->httpResponse;

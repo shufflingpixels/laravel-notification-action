@@ -33,6 +33,19 @@ class NotificationActionControllerTest extends TestCase
         $this->assertNotNull($notification->fresh()->read_at, 'Notification should be marked as read');
     }
 
+    public function test_executes_action_and_deletes_notification(): void
+    {
+        $notification = $this->createNotification(SampleNotification::class);
+
+        $uri = route('notification-actions.handle', [
+            'notification' => $notification,
+            'action' => 'remove',
+        ]);
+
+        $this->get($uri)->assertOk();
+        $this->assertDatabaseMissing('notifications', ['id' => $notification->id]);
+    }
+
     protected function createNotification(string $type): DatabaseNotification
     {
         return DatabaseNotification::create([

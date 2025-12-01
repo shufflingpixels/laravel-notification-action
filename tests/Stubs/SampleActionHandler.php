@@ -11,4 +11,9 @@ class SampleActionHandler
     {
         return Response::markAsRead();
     }
+
+    public function remove(DatabaseNotification $notification): Response
+    {
+        return Response::delete();
+    }
 }
