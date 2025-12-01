@@ -14,12 +14,12 @@ class Response
         $this->httpResponse ??= response()->noContent(200);
     }
 
-    static public function markAsRead()
+    public static function markAsRead()
     {
         return new Response(markAsRead: true);
     }
 
-    static public function delete()
+    public static function delete()
     {
         return new Response(delete: true);
     }

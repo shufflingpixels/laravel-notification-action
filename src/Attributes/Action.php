@@ -7,7 +7,5 @@ use Attribute;
 #[Attribute]
 class Action
 {
-    public function __construct(public string $class)
-    {
-    }
+    public function __construct(public string $class) {}
 }

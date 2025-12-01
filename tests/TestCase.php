@@ -29,9 +29,9 @@ abstract class TestCase extends Orchestra
         $app['config']->set('notification-action.middleware', ['web']);
         $app['config']->set('database.default', 'testing');
         $app['config']->set('database.connections.testing', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
     }
 

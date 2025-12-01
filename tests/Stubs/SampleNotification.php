@@ -6,6 +6,4 @@ use Illuminate\Notifications\Notification;
 use ShufflingPixels\NotificationAction\Attributes\Action;
 
 #[Action(SampleActionHandler::class)]
-class SampleNotification extends Notification
-{
-}
+class SampleNotification extends Notification {}

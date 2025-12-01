@@ -1,7 +1,7 @@
 <?php
 
-use ShufflingPixels\NotificationAction\Http\Controllers\NotificationActionController;
 use Illuminate\Support\Facades\Route;
+use ShufflingPixels\NotificationAction\Http\Controllers\NotificationActionController;
 
 Route::group([
     'prefix' => config('notification-action.prefix', 'notification-action'),

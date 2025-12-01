@@ -2,11 +2,11 @@
 
 namespace ShufflingPixels\NotificationAction\Http\Controllers;
 
-use ShufflingPixels\NotificationAction\Attributes\Action;
-use ShufflingPixels\NotificationAction\Http\Response;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\DB;
 use ReflectionClass;
+use ShufflingPixels\NotificationAction\Attributes\Action;
+use ShufflingPixels\NotificationAction\Http\Response;
 
 class NotificationActionController
 {
@@ -22,7 +22,7 @@ class NotificationActionController
         return DB::transaction(function () use ($actionHandler, $notification, $action) {
             $response = $actionHandler->$action($notification);
             if (! ($response instanceof Response)) {
-                return new Response();
+                return new Response;
             }
 
             if ($response->markAsRead) {
@@ -32,11 +32,12 @@ class NotificationActionController
             if ($response->delete) {
                 $notification->delete();
             }
+
             return $response;
         })->httpResponse;
     }
 
-    protected function resolveHandler(?string $class) : Object|null
+    protected function resolveHandler(?string $class): ?object
     {
         if ($class === null) {
             return null;
@@ -52,10 +53,11 @@ class NotificationActionController
         if (count($arguments) < 1) {
             return null;
         }
+
         return app()->make($arguments[0]);
     }
 
-    protected function checkSettings(object $handler, $setting) : mixed
+    protected function checkSettings(object $handler, $setting): mixed
     {
         if (property_exists($handler, $setting)) {
             return $handler->$setting;

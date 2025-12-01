@@ -13,8 +13,8 @@ class NotificationActionControllerTest extends TestCase
         $notification = $this->createNotification(NoActionNotification::class);
 
         $uri = route('notification-actions.handle', [
-            'notification' => $notification, 
-            'action' => 'approve'
+            'notification' => $notification,
+            'action' => 'approve',
         ]);
 
         $this->get($uri)->assertNotFound();
@@ -25,8 +25,8 @@ class NotificationActionControllerTest extends TestCase
         $notification = $this->createNotification(SampleNotification::class);
 
         $uri = route('notification-actions.handle', [
-            'notification' => $notification, 
-            'action' => 'approve'
+            'notification' => $notification,
+            'action' => 'approve',
         ]);
 
         $this->get($uri)->assertOk();

@@ -8,7 +8,7 @@ class NotificationActionServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/notification-action.php', 
+        $this->mergeConfigFrom(__DIR__.'/../config/notification-action.php',
             'notification-action');
     }
 
